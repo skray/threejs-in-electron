@@ -2,7 +2,7 @@
 
 A basic example of loading [Three.JS](https://threejs.org/) in an [Electron](https://electronjs.org/) app.
 
-![Running application](/assets/threejs-in-electron.gif)
+![Running application](/assets/demo-gif.gif)
 
 ## Running
 
