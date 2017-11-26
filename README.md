@@ -1,6 +1,6 @@
 # ThreeJS in Electron
 
-A basic example of loading [Three.JS](https://threejs.org/) in an [Electron](https://electronjs.org/) app.
+Some examples of using [Three.JS](https://threejs.org/) in an [Electron](https://electronjs.org/) app.
 
 ![Running application](/assets/demo-gif.gif)
 
