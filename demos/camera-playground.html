@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Basic loading</title>
+    <style media="screen">
+      html,body {
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+        text-align: center;
+      }
+      a {
+        text-decoration: none;
+      }
+      #info {
+      	position: absolute;
+        text-align: left;
+      	top: 2.5rem;
+      	left: .25rem;
+        width: 15rem;
+        color: white;
+      }
+      #controls {
+        position: absolute;
+        right: .25rem;
+        top: 2.5rem;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div>Camera Playground</div>
+    <a href="../index.html">&lt; Back to demo list</a>
+    <div id="info">
+      This is a playground to try different camera parameters.
+    </div>
+    <div id="controls">
+      <div>
+        <label for="">Camera X</label>
+        <input id="cameraX" type="number" value="0">
+      </div>
+      <div>
+        <label for="">Camera Y</label>
+        <input id="cameraY" type="number" value="-8">
+      </div>
+      <div>
+        <label for="">Camera Z</label>
+        <input id="cameraZ"  type="number" value="5">
+      </div>
+    </div>
+    <script src="../node_modules/three/build/three.min.js"></script>
+    <script type="text/javascript">
+
+      var camera, scene, renderer;
+
+      init();
+      animate();
+
+      function init() {
+
+      	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.01, 100000 );
+
+      	scene = new THREE.Scene();
+
+      	var boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+      	var boxMaterial = new THREE.MeshNormalMaterial();
+
+      	var boxMesh = new THREE.Mesh( boxGeometry, boxMaterial );
+        boxMesh.position.z = 0.5;
+      	scene.add( boxMesh );
+
+        var planeGeometry = new THREE.PlaneGeometry( 20, 20, 1, 1 );
+        var planeMaterial = new THREE.MeshBasicMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
+        var planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
+        scene.add( planeMesh );
+
+      	renderer = new THREE.WebGLRenderer( { antialias: true } );
+      	renderer.setSize( window.innerWidth, window.innerHeight );
+      	document.body.appendChild( renderer.domElement );
+
+      }
+
+      function animate() {
+
+      	requestAnimationFrame( animate );
+
+        let x = document.getElementById('cameraX').value;
+        let y = document.getElementById('cameraY').value;
+        let z = document.getElementById('cameraZ').value;
+
+        camera.position.set( x, y, z );
+        camera.lookAt(new THREE.Vector3(0,0,0));
+
+      	renderer.render( scene, camera );
+      }
+
+    </script>
+  </body>
+</html>
