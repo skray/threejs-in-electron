@@ -32,11 +32,12 @@
       Move the cube with the WASD keys.
     </div>
     <script src="../node_modules/three/build/three.min.js"></script>
+    <script src="../shared/controls.js"></script>
     <script type="text/javascript">
 
       var camera, scene, renderer, clock;
       var cubeMesh;
-      var movementVector = {x: 0, y: 0}, movementState = {left: 0, right: 0, forward: 0, back: 0}, movementSpeed = 1;
+      var controls;
 
       init();
       animate();
@@ -57,6 +58,7 @@
       	cubeMesh = new THREE.Mesh( cubeGeometry, cubeMaterial );
         cubeMesh.position.z = 0.5;
       	scene.add( cubeMesh );
+        controls = new THREEDEMO.controls(cubeMesh)
 
         var planeGeometry = new THREE.PlaneGeometry( 20, 20, 1, 1 );
         var planeMaterial = new THREE.MeshBasicMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
@@ -66,9 +68,6 @@
       	renderer = new THREE.WebGLRenderer( { antialias: true } );
       	renderer.setSize( window.innerWidth, window.innerHeight );
       	document.body.appendChild( renderer.domElement );
-
-        window.addEventListener('keydown', keydown);
-        window.addEventListener('keyup', keyup);
       }
 
       function animate() {
@@ -79,50 +78,9 @@
       function render() {
         var delta = clock.getDelta();
 
-        var moveMultiplier = delta * movementSpeed;
-        cubeMesh.translateX( movementVector.x * moveMultiplier );
-    		cubeMesh.translateY( movementVector.y * moveMultiplier );
+        controls.update(delta);
 
         renderer.render( scene, camera );
-      }
-
-      function keydown(event) {
-        if(event.key === 'w') {
-          movementState.forward = 1;
-        }
-        if(event.key === 's') {
-          movementState.back = 1;
-        }
-        if(event.key === 'a') {
-          movementState.left = 1;
-        }
-        if(event.key === 'd') {
-          movementState.right = 1;
-        }
-
-        updateMovementVector();
-      }
-
-      function keyup(event) {
-        if(event.key === 'w') {
-          movementState.forward = 0;
-        }
-        if(event.key === 's') {
-          movementState.back = 0;
-        }
-        if(event.key === 'a') {
-          movementState.left = 0;
-        }
-        if(event.key === 'd') {
-          movementState.right = 0;
-        }
-
-        updateMovementVector()
-      }
-
-      function updateMovementVector() {
-        movementVector.x = -movementState.left + movementState.right;
-        movementVector.y = -movementState.back + movementState.forward;
       }
 
     </script>
