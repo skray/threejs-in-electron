@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Collision</title>
+    <style media="screen">
+      html,body {
+        padding: 0;
+        margin: 0;
+      }
+      body {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
+        text-align: center;
+      }
+      a {
+        text-decoration: none;
+      }
+      #info {
+      	position: absolute;
+        text-align: left;
+      	top: 2.5rem;
+      	left: .25rem;
+        width: 15rem;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div>Collision</div>
+    <a href="../index.html">&lt; Back to demo list</a>
+    <div id="info">
+      Move the cube with the WASD keys.
+    </div>
+    <script src="../node_modules/three/build/three.min.js"></script>
+    <script src="../shared/controls.js"></script>
+    <script type="text/javascript">
+
+      var camera, scene, renderer, clock;
+      var cubeMesh;
+      var controls;
+      var collidableMeshList = [];
+
+      init();
+      animate();
+
+      function init() {
+
+        clock = new THREE.Clock();
+
+        scene = new THREE.Scene();
+
+      	camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 0.1, 1000 );
+      	camera.position.z = 5;
+        camera.position.y = -8
+        camera.lookAt(new THREE.Vector3(0,0,0));
+
+      	var cubeGeometry = new THREE.BoxGeometry( 1,1,1 );
+      	var cubeMaterial = new THREE.MeshNormalMaterial();
+      	cubeMesh = new THREE.Mesh( cubeGeometry, cubeMaterial );
+        cubeMesh.position.z = 0.5;
+      	scene.add( cubeMesh );
+        controls = new THREEDEMO.controls(cubeMesh)
+
+        var planeGeometry = new THREE.PlaneGeometry( 20, 20, 1, 1 );
+        var planeMaterial = new THREE.MeshBasicMaterial( {color: 0x0000ff, side: THREE.DoubleSide} );
+        var planeMesh = new THREE.Mesh( planeGeometry, planeMaterial );
+        scene.add( planeMesh );
+
+        var wallGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+      	var wallMaterial = new THREE.MeshBasicMaterial( {color: 0x8888ff} );
+      	var wireMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe:true } );
+
+      	var wall = new THREE.Mesh(wallGeometry, wallMaterial);
+      	wall.position.set(2, 2, 0.5);
+      	scene.add(wall);
+      	collidableMeshList.push(wall);
+
+      	renderer = new THREE.WebGLRenderer( { antialias: true } );
+      	renderer.setSize( window.innerWidth, window.innerHeight );
+      	document.body.appendChild( renderer.domElement );
+      }
+
+      function animate() {
+      	requestAnimationFrame( animate );
+        render();
+      }
+
+      function render() {
+        var delta = clock.getDelta();
+
+        controls.update(delta);
+
+        // taken from https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Collision-Detection.html
+        var originPoint = cubeMesh.position.clone();
+        for (var vertexIndex = 0; vertexIndex < cubeMesh.geometry.vertices.length; vertexIndex++) {
+          var localVertex = cubeMesh.geometry.vertices[vertexIndex].clone();
+          var globalVertex = localVertex.applyMatrix4( cubeMesh.matrix );
+          var directionVector = globalVertex.sub( cubeMesh.position );
+
+          var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+          var collisionResults = ray.intersectObjects( collidableMeshList );
+          if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+            console.log('hit');
+          }
+        }
+        renderer.render( scene, camera );
+      }
+
+    </script>
+  </body>
+</html>
