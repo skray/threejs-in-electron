@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Collision</title>
+    <link href="../shared/info.css" rel="stylesheet">
     <style media="screen">
       html,body {
         padding: 0;
@@ -15,35 +16,28 @@
       a {
         text-decoration: none;
       }
-      #info {
-      	position: absolute;
-        text-align: left;
-      	top: 2.5rem;
-      	left: .25rem;
-        width: 15rem;
-        color: white;
-      }
     </style>
   </head>
   <body>
     <div>Collision</div>
     <a href="../index.html">&lt; Back to demo list</a>
-    <div id="info">
-      Move the cube with the WASD keys.
-    </div>
     <script src="../node_modules/three/build/three.min.js"></script>
     <script src="../shared/controls.js"></script>
+    <script src="../shared/info.js"></script>
     <script type="text/javascript">
 
       var camera, scene, renderer, clock;
       var cubeMesh;
       var controls;
       var collidableMeshList = [];
+      var info;
 
       init();
       animate();
 
       function init() {
+
+        info = new THREEDEMO.info('Move the cube with the WASD keys.');
 
         clock = new THREE.Clock();
 
@@ -92,6 +86,7 @@
 
         // taken from https://github.com/stemkoski/stemkoski.github.com/blob/master/Three.js/Collision-Detection.html
         var originPoint = cubeMesh.position.clone();
+        var hit = false;
         for (var vertexIndex = 0; vertexIndex < cubeMesh.geometry.vertices.length; vertexIndex++) {
           var localVertex = cubeMesh.geometry.vertices[vertexIndex].clone();
           var globalVertex = localVertex.applyMatrix4( cubeMesh.matrix );
@@ -100,8 +95,13 @@
           var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
           var collisionResults = ray.intersectObjects( collidableMeshList );
           if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-            console.log('hit');
+            hit = true;
           }
+        }
+        if(hit) {
+          info.setBody(`hit`);
+        } else {
+          info.setBody('no hit');
         }
         renderer.render( scene, camera );
       }

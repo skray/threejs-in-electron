@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>Basic loading</title>
+    <link href="../shared/info.css" rel="stylesheet">
     <style media="screen">
       html,body {
         padding: 0;
@@ -15,23 +16,13 @@
       a {
         text-decoration: none;
       }
-      #info {
-      	position: absolute;
-        text-align: left;
-      	top: 2.5rem;
-      	left: .25rem;
-        width: 15rem;
-        color: white;
-      }
     </style>
   </head>
   <body>
     <div>Keyboard movement</div>
     <a href="../index.html">&lt; Back to demo list</a>
-    <div id="info">
-      Move the cube with the WASD keys.
-    </div>
     <script src="../node_modules/three/build/three.min.js"></script>
+    <script src="../shared/info.js"></script>
     <script src="../shared/controls.js"></script>
     <script type="text/javascript">
 
@@ -43,6 +34,8 @@
       animate();
 
       function init() {
+
+        let info = new THREEDEMO.info('Move the cube with the WASD keys.');
 
         clock = new THREE.Clock();
 
